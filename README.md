@@ -1,8 +1,11 @@
 # Muscle-Contractility-DES
 
 **Course:** Cell and Molecular Biology (Ch 09 activity): Molecular Mechanisms of Muscle Contractility
+
 **Student:** Rhealyn F. Alama
+
 **Assignment:** #36, DES, NM_001927.4:c.38C>T (p.Ser13Phe), ClinVar 44260
+
 **Date accessed (all databases):** 2026-10-27
 
 ---
