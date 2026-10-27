@@ -1,184 +1,193 @@
-# ============================================================
-# Muscle Contractility: DES (Student 36)
-# Transcript: NM_001927.4 | Variant: c.38C>T (p.Ser13Phe)
-# ClinVar Variation ID: 44260
-# Name: Rhealyn F. Alama
-# Run the whole script with Source (Ctrl+Shift+S) from the
-# Muscle_Contractility_DES project. Internet access is required.
-# ============================================================
+# Muscle-Contractility-DES
 
-# ---- Step 1. Setup -----------------------------------------
-# Run installation only once on your computer:
-# install.packages(c("rentrez", "ggplot2"))
+**Course:** Cell and Molecular Biology (Ch 09 activity): Molecular Mechanisms of Muscle Contractility
+**Student:** Rhealyn F. Alama
+**Assignment:** #36, DES, NM_001927.4:c.38C>T (p.Ser13Phe), ClinVar 44260
+**Date accessed (all databases):** 2026-10-27
 
-library(rentrez)
-library(ggplot2)
+---
 
-gene_symbol          <- "DES"
-transcript_accession <- "NM_001927.4"
-clinvar_id           <- "44260"
-variant_protein      <- "p.Ser13Phe"
+## (a) Assignment
 
-for (x in c("data", "results", "figures")) {
-  dir.create(x, showWarnings = FALSE)
-}
+| Item | Value |
+|---|---|
+| Assignment number | 36 |
+| Gene | DES (desmin) |
+| NCBI Gene ID | 1674 |
+| Chromosome | 2 (cytogenetic band 2q35) |
+| Transcript | NM_001927.4 |
+| Variant | c.38C>T (p.Ser13Phe) |
+| Matching protein | NP_001918.3 (desmin isoform 1) |
+| ClinVar Variation ID | 44260 |
+| Variant class | Missense |
 
-# ---- Step 2. NCBI Gene record ------------------------------
-hits <- entrez_search(
-  db = "gene",
-  term = paste0(gene_symbol, "[Gene Name] AND txid9606[Organism]"),
-  retmax = 20
-)
-if (length(hits$ids) == 0) stop("Gene not found")
+## (b) Research question
 
-# Verify the exact gene symbol, not just a similar family member
-gene_id <- NA_character_
-for (id in hits$ids) {
-  rec <- entrez_summary(db = "gene", id = id)
-  if (toupper(rec$name) == toupper(gene_symbol)) {
-    gene_id <- id
-    gene_info <- rec
-    break
-  }
-}
-if (is.na(gene_id)) stop("Exact human gene not found")
-print(gene_info)
+How is the desmin missense variant p.Ser13Phe, located near the N-terminus of the protein, associated with muscle disease, and what do the experimental, clinical, and computational evidence each support about its effect on muscle integrity?
 
-writeLines(c(
-  paste("Gene symbol:", gene_info$name),
-  paste("NCBI Gene ID:", gene_id),
-  paste("Official name:", gene_info$description),
-  paste("Chromosome:", gene_info$chromosome)
-), "results/gene_summary.txt")
+---
 
-# ---- Step 3. Protein sequence from the assigned transcript -
-gb <- entrez_fetch(
-  db = "nuccore", id = transcript_accession,
-  rettype = "gb", retmode = "text"
-)
+## (c) Methods
 
-pat <- '/protein_id="NP_[0-9]+[.][0-9]+"'
-fragment <- regmatches(gb, regexpr(pat, gb))
-if (length(fragment) == 0) {
-  stop("NP protein ID not found; inspect the transcript record")
-}
-protein_accession <- gsub('^/protein_id="|"$', '', fragment)
+All code is in `analysis.R`. R 4.4.2 on Windows 11; packages rentrez 1.2.4 and ggplot2 4.0.3.
 
-protein_fasta <- entrez_fetch(
-  db = "protein", id = protein_accession,
-  rettype = "fasta", retmode = "text"
-)
-if (!startsWith(protein_fasta, ">")) stop("Invalid FASTA")
+1. Created the folder `Muscle_Contractility_DES` as an RStudio project. The script creates the subfolders `data`, `results`, and `figures`.
+2. Installed the packages once with `install.packages(c("rentrez", "ggplot2"))` and loaded them with `library(rentrez)` and `library(ggplot2)`.
+3. Set the assignment values: `gene_symbol <- "DES"`, `transcript_accession <- "NM_001927.4"`, `clinvar_id <- "44260"`, `variant_protein <- "p.Ser13Phe"`.
+4. Searched NCBI Gene with `entrez_search(db = "gene", term = "DES[Gene Name] AND txid9606[Organism]")`, confirmed the exact symbol with `entrez_summary()`, and saved `results/gene_summary.txt`.
+5. Fetched the GenBank record of NM_001927.4 with `entrez_fetch(db = "nuccore", rettype = "gb")`, extracted the NP_ accession from the `/protein_id` field with a regular expression, fetched the protein FASTA with `entrez_fetch(db = "protein", rettype = "fasta")`, and saved `data/DES_protein.fasta` and `results/protein_accession.txt`.
+6. Read the FASTA, counted the 20 standard amino acids with `table(factor(...))`, saved `results/amino_acid_composition.csv`, and plotted the counts with ggplot2 (`figures/01_amino_acid_composition.png`).
+7. Extracted the residue number from `p.Ser13Phe` and plotted a linear protein map with the variant marked (`figures/02_variant_position.png`).
+8. Opened ClinVar record 44260 in a browser and recorded its fields manually (see Results). Read the PubMed abstracts of the three cited papers (see References).
+9. Read the domain coordinates of UniProt P17661 from its Family & Domains table, drew a to-scale domain map of the 470-residue protein, and marked residue 13 (`figures/protein_structure_or_splice_diagram.png`).
 
-fasta_file <- file.path("data", paste0(gene_symbol, "_protein.fasta"))
-writeLines(protein_fasta, fasta_file)
+**Errors corrected:** None.
 
-cat("Matched protein:", protein_accession, "\n")
-writeLines(paste("NP accession:", protein_accession),
-           "results/protein_accession.txt")
+**To rerun from a fresh R installation:**
+1. Install R and RStudio and open this folder as a project.
+2. Run `install.packages(c("rentrez", "ggplot2"))` once.
+3. Open `analysis.R` and click Source. An internet connection is needed because the script queries NCBI.
+4. If an NCBI request fails temporarily, rerun only that section. The assigned gene and variant are never changed.
 
-# ---- Step 4. Protein length and amino-acid composition -----
-fasta_lines <- readLines(fasta_file)
-sequence <- paste(fasta_lines[!grepl("^>", fasta_lines)], collapse = "")
-aa <- strsplit(toupper(sequence), "")[[1]]
-protein_length <- length(aa)
+---
 
-standard <- strsplit("ACDEFGHIKLMNPQRSTVWY", "")[[1]]
-counts <- table(factor(aa, levels = standard))
-results <- data.frame(AminoAcid = standard, Count = as.integer(counts))
-write.csv(results, "results/amino_acid_composition.csv", row.names = FALSE)
+## (d) Results
 
-cat("Protein length:", protein_length, "amino acids\n")
-print(head(results[order(-results$Count), ], 3))
+### NCBI Gene and protein
+- Official name: desmin. Gene ID 1674. Chromosome 2.
+- Retrieved protein: **NP_001918.3** (desmin isoform 1), **470 amino acids**.
+- The retrieved sequence begins MSQAYSSSQRVSSY..., so residue 13 is serine. This matches the assigned p.Ser13Phe numbering.
 
-fig1 <- ggplot(results, aes(AminoAcid, Count)) +
-  geom_col(fill = "grey45") +
-  theme_bw() +
-  labs(title = paste(gene_symbol, "amino-acid composition"),
-       x = "Amino acid", y = "Number of residues")
-print(fig1)
-ggsave("figures/01_amino_acid_composition.png", fig1,
-       width = 8, height = 5, dpi = 300)
+### Amino-acid composition
+The three most abundant residues are **Glu (E) 57, Leu (L) 49, and Ala (A) 44**.
 
-# ---- Step 6. Variant position plot (Option A) --------------
-if (nzchar(variant_protein)) {
-  matched  <- regmatches(variant_protein, regexpr("[0-9]+", variant_protein))
-  position <- as.integer(matched)
+![Amino-acid composition of desmin](figures/01_amino_acid_composition.png)
 
-  if (!is.na(position) && position >= 1 && position <= protein_length) {
-    fig2 <- ggplot() +
-      geom_segment(aes(x = 1, xend = protein_length, y = 0, yend = 0),
-                   linewidth = 2) +
-      geom_point(aes(x = position, y = 0), size = 4) +
-      annotate("text", x = position, y = 0.25,
-               label = variant_protein, size = 4) +
-      xlim(0, protein_length) + ylim(-0.6, 0.6) +
-      theme_void() +
-      labs(title = paste(gene_symbol, "reference protein"),
-           x = "Amino-acid position") +
-      theme(axis.title.x = element_text())
-    print(fig2)
-    ggsave("figures/02_variant_position.png", fig2,
-           width = 8, height = 2.5, dpi = 300)
-  }
-}
+### Variant position
+![Position of p.Ser13Phe in the 470-residue protein](figures/02_variant_position.png)
 
-# ---- Step 6b. Domain map of desmin (UniProt P17661) --------
-# Coordinates read manually from the UniProt P17661
-# Family & Domains table, accessed 2026-10-27.
-domains <- data.frame(
-  Region = c("Head", "Coil 1A", "Linker 1", "Coil 1B", "Linker 12",
-             "Coil 2A", "Linker 2", "Coil 2B", "Tail"),
-  start  = c(2, 109, 142, 152, 253, 269, 288, 296, 413),
-  end    = c(108, 141, 151, 252, 268, 287, 295, 412, 470)
-)
-domains$Region <- factor(domains$Region, levels = domains$Region)
+Residue 13 lies very close to the N-terminus.
 
-variant_pos <- as.integer(regmatches(variant_protein,
-                                     regexpr("[0-9]+", variant_protein)))
+### Domain map
+![Desmin domain map with p.Ser13Phe marked](figures/protein_structure_or_splice_diagram.png)
 
-fig3 <- ggplot(domains) +
-  geom_rect(aes(xmin = start - 1, xmax = end, ymin = 0, ymax = 1,
-                fill = Region), colour = "black") +
-  annotate("segment", x = variant_pos, xend = variant_pos,
-           y = 1.6, yend = 1.05,
-           arrow = arrow(length = unit(0.2, "cm")), linewidth = 0.9) +
-  annotate("text", x = variant_pos + 8, y = 1.75, hjust = 0, size = 4,
-           label = paste0(variant_protein, " (residue ", variant_pos,
-                          ", head domain)")) +
-  scale_x_continuous(limits = c(0, 472),
-                     breaks = c(1, 100, 200, 300, 400, 470)) +
-  ylim(-0.1, 2) +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid = element_blank()) +
-  labs(title = "Human desmin (DES, P17661) domain map",
-       x = "Amino-acid position (470 aa)", y = NULL,
-       fill = "UniProt region",
-       caption = paste("Domain coordinates: UniProt P17661, accessed",
-                       "2026-10-27. Variant marker added by the student."))
-print(fig3)
-ggsave("figures/protein_structure_or_splice_diagram.png", fig3,
-       width = 9, height = 3.5, dpi = 300)
+Domain coordinates are from UniProt P17661 (accessed 2026-10-27). The variant marker was added by the student.
 
-# ---- Record for README -------------------------------------
-cat("\n--- Values to copy into README.md ---\n")
-cat("Gene ID:", gene_id, "\n")
-cat("Official name:", gene_info$description, "\n")
-cat("Chromosome:", gene_info$chromosome, "\n")
-cat("NP accession:", protein_accession, "\n")
-cat("Protein length:", protein_length, "aa\n")
-cat("Date run:", format(Sys.Date()), "\n")
+| UniProt region | Positions |
+|---|---|
+| Head | 2-108 |
+| IF rod domain | 108-416 |
+| Coil 1A | 109-141 |
+| Linker 1 | 142-151 |
+| Coil 1B | 152-252 |
+| Linker 12 | 253-268 |
+| Coil 2A | 269-287 |
+| Linker 2 | 288-295 |
+| Coil 2B | 296-412 |
+| Tail | 413-470 |
 
-# ---- Final check: every required output exists -------------
-expected <- c("data/DES_protein.fasta",
-              "results/gene_summary.txt",
-              "results/protein_accession.txt",
-              "results/amino_acid_composition.csv",
-              "figures/01_amino_acid_composition.png",
-              "figures/02_variant_position.png",
-              "figures/protein_structure_or_splice_diagram.png")
-print(data.frame(file = expected, exists = file.exists(expected)))
+**Residue 13 falls in the head domain (positions 2-108).** In the UniProt Feature viewer, the embedded AlphaFold model has very low confidence (pLDDT < 50) over the N-terminal region, so a predicted structure would say little about residue 13. For this reason I used the domain schematic and not a structure image.
 
-sessionInfo()
+### ClinVar record (accessed 2026-10-27)
+
+| Field | Value |
+|---|---|
+| Variant name | NM_001927.4(DES):c.38C>T (p.Ser13Phe) |
+| Accession | VCV000044260.27 |
+| Protein HGVS | NP_001918.3:p.Ser13Phe |
+| Type | Single nucleotide variant, 1 bp; molecular consequence: missense |
+| Location | 2q35; GRCh38 2:219418500; GRCh37 2:220283222 |
+| Aggregate classification | Pathogenic (5) |
+| Review status | Criteria provided, multiple submitters, no conflicts (2 stars) |
+| Submissions | 10 total; 5 contributed to the aggregate classification |
+| First in ClinVar | Oct 19, 2013 |
+| Last submission | Sep 22, 2026 |
+| Last evaluated | Oct 29, 2025 |
+| Conditions reported | Myopathy, myofibrillar, 1; desmin-related myofibrillar myopathy; DES-related disorders |
+| Population frequency | TOPMed 0.00000 |
+| Other identifiers | dbSNP rs62636495; OMIM 125660.0019; UniProtKB P17661 (VAR_067208) |
+| PubMed IDs listed | 17720647, 18061454, 19763525, 19879535, 22215463, 22403400, 23349452, 26097489 |
+
+**Notes on the record**
+- The classification was not changed and showed no conflict at the time of access.
+- Five of the ten submissions do not contribute to the aggregate. They include a literature-only OMIM entry, three data-share entries from the Netherlands, and one Singapore entry labeled "not provided".
+- Submitters use different condition names, and one submission states that the disease assignment is uncertain.
+
+---
+
+## (e) Variant interpretation
+
+The variant c.38C>T changes codon 13 of DES from serine to phenylalanine. A small polar residue is replaced by a large nonpolar aromatic one in the N-terminal head domain (positions 2-108), inside a conserved nine-residue motif (SSYRRTFGG) described by Sharma et al. Because this is a missense change, a full-length protein with one substituted residue is expected, not a truncated protein. ClinVar classifies the variant as Pathogenic, and the evidence behind that classification is separated into experimental, clinical, and predicted categories in the discussion below.
+
+---
+
+## (f) Limitations and validation experiment
+
+**Limitations**
+- ClinVar classifications can be updated. This report reflects the record on 2026-10-27.
+- Only 5 of 10 submissions contribute to the aggregate, and several reports describe related Dutch families that share an ancestor, so they are not fully independent.
+- Amino-acid composition cannot show function or the effect of a variant.
+- A marker on a protein map gives a sequence position, not proof of a changed molecular interaction.
+- The cell experiments in the cited papers used non-muscle cell lines, which may not reproduce muscle behavior. The two papers I read also differ in detail (see the discussion), so the cellular effect is not fully settled.
+- I read the abstracts, not the full text, of the three papers, and I ran no structural or computational analysis of the variant myself.
+
+**Proposed validation experiment**
+Express wild-type desmin, S13F desmin, and a 1:1 mixture in a desmin-null muscle cell line (for example differentiated myotubes) and compare filament networks by immunofluorescence and aggregate size by image quantification. Include a phospho-mimetic S13D and a non-phosphorylatable S13A construct to test whether the loss of a phosphorylatable serine explains the defect. Confirm assembly with a sedimentation assay or electron microscopy.
+
+---
+
+## (g) Sources and access dates
+
+| Source | Link | Accessed |
+|---|---|---|
+| NCBI Gene (DES, ID 1674) | https://www.ncbi.nlm.nih.gov/gene/1674 | 2026-10-27 |
+| RefSeq transcript NM_001927.4 | https://www.ncbi.nlm.nih.gov/nuccore/NM_001927.4 | 2026-10-27 |
+| RefSeq protein NP_001918.3 | https://www.ncbi.nlm.nih.gov/protein/NP_001918.3 | 2026-10-27 |
+| ClinVar variation 44260 | https://www.ncbi.nlm.nih.gov/clinvar/variation/44260/ | 2026-10-27 |
+| UniProt P17661 (DESM_HUMAN) | https://www.uniprot.org/uniprotkb/P17661/entry | 2026-10-27 |
+| PubMed 19763525 | https://pubmed.ncbi.nlm.nih.gov/19763525/ | 2026-10-27 |
+| PubMed 18061454 | https://pubmed.ncbi.nlm.nih.gov/18061454/ | 2026-10-27 |
+| PubMed 17720647 | https://pubmed.ncbi.nlm.nih.gov/17720647/ | 2026-10-27 |
+
+**References**
+1. Sharma S, Mücke N, Katus HA, Herrmann H, Bär H. Disease mutations in the "head" domain of the extra-sarcomeric protein desmin distinctly alter its assembly and network-forming properties. *J Mol Med (Berl)*. 2009;87(12):1207-1219. doi:10.1007/s00109-009-0521-9. PMID 19763525.
+2. Pica EC, Kathirvel P, Pramono ZAD, Lai PS, Yee WC. Characterization of a novel S13F desmin mutation associated with desmin myopathy and heart block in a Chinese family. *Neuromuscul Disord*. 2008;18(2):178-182. doi:10.1016/j.nmd.2007.09.011. PMID 18061454.
+3. Bergman JE, Veenstra-Knol HE, van Essen AJ, van Ravenswaaij CMA, den Dunnen WFA, van den Wijngaard A, van Tintelen JP. Two related Dutch families with a clinically variable presentation of cardioskeletal myopathy caused by a novel S13F mutation in the desmin gene. *Eur J Med Genet*. 2007;50(5):355-366. doi:10.1016/j.ejmg.2007.06.003. PMID 17720647.
+4. NCBI ClinVar. Variation ID 44260, accession VCV000044260.27. https://www.ncbi.nlm.nih.gov/clinvar/variation/44260/
+5. UniProt Consortium. UniProtKB entry P17661 (DESM_HUMAN). https://www.uniprot.org/uniprotkb/P17661/entry
+
+---
+
+## Answers to the Section V questions
+
+**1. What does DES encode, and how does the protein contribute to muscle function?**
+DES encodes desmin, the main muscle intermediate filament protein. It is structural and is not part of the actin-myosin cycle. Desmin filaments connect Z-discs, link neighboring myofibrils, and tie them to the sarcolemma, which helps keep sarcomeres aligned and the muscle cell intact in skeletal, cardiac, and smooth muscle.
+
+**2. What was the exact protein accession and length retrieved with R?**
+NP_001918.3, 470 amino acids (matched to transcript NM_001927.4).
+
+**3. What did the amino-acid composition chart show, and what can it not tell you?**
+Glu (57), Leu (49), and Ala (44) were the most abundant residues. That is consistent with a long helical, coiled-coil-rich rod, but composition alone cannot prove the protein's function or the effect of the variant.
+
+**4. What is the fixed ClinVar variant, and what are its classification and evidence strength?**
+NM_001927.4:c.38C>T (p.Ser13Phe), Variation ID 44260. It is classified Pathogenic with 2-star review status (criteria provided, multiple submitters, no conflicts). Five of ten submissions contribute to the aggregate, and no newer or conflicting classification was seen.
+
+**5. What mechanism is supported, and what remains uncertain?**
+The papers I read report that S13F desmin assembles abnormally in cells, forming accumulations or aggregates, and that serine 13 lies in a conserved head-domain motif at a protein kinase C phosphorylation site. They differ on whether the mutant can still form filaments: one reports a preserved filamentous network, the other reports that it cannot form normal filaments alone and fails to integrate into the existing network. Whether lost phosphorylation, disturbed assembly, or both drives the disease is not settled.
+
+**6. What additional experiment would help?**
+See section (f): wild-type, S13F, S13D, and S13A desmin expressed in muscle cells and compared by immunofluorescence and filament-assembly assays.
+
+---
+
+## Discussion (experimental, clinical, and predicted evidence)
+
+Desmin is the main intermediate filament protein of skeletal, cardiac, and smooth muscle. It does not drive the actin-myosin cycle. Instead, desmin filaments surround and link Z-discs, join neighboring myofibrils, and connect them to the sarcolemma, which keeps sarcomeres aligned during contraction. The assigned variant, c.38C>T, replaces serine 13 with phenylalanine in NP_001918.3 (470 residues), within the head domain (UniProt positions 2-108).
+
+**Experimental observations.** Sharma et al. (2009) tested recombinant protein and cell expression. They report that S13F, along with R16C, interfered with in vitro assembly by forming filamentous aggregates, could not build a proper filament system in cells lacking their own intermediate filaments, and, in cells that already express vimentin or desmin, failed to join the existing network and altered its cellular localization. Pica et al. (2008) reported that expressing mutant desmin in cell lines produced large desmin accumulations while a filamentous network was still preserved, and noted that the mutation lies at a protein kinase C phosphorylation site in a conserved head-domain motif. The two reports differ on how well the network is preserved, which I treat as unresolved. Per the ClinVar text, patient heart tissue showed irregular intercalated discs.
+
+**Clinical association.** Pica et al. described a man with complete heart block and mild proximal and distal limb weakness, with relatives showing a similar or milder picture. Bergman et al. (2007) described two distantly related Dutch families with autosomal dominant desmin-related myopathy affecting 15 members, ranging from isolated dilated cardiomyopathy to generalized skeletal myopathy with mild respiratory problems. Muscle biopsies showed intracytoplasmic desmin aggregates, and S13F cosegregated with disease. Haplotype analysis summarized in the ClinVar record points to a shared ancestor, so the related families are not independent observations. Several laboratories classify the variant as Pathogenic, and ClinVar's aggregate is Pathogenic with 2-star status. The variant is absent from TOPMed, which fits a rare disease variant but does not prove pathogenicity.
+
+**Predictions.** One submitting laboratory reports computational modeling that predicts the substitution disrupts protein function. This is a prediction, not an observation. I ran no structural analysis, and the AlphaFold model has very low confidence near residue 13.
+
+**Uncertainty.** The evidence associates S13F with desmin myopathy and cardiac disease and shows abnormal assembly in cells, but it does not show whether lost phosphorylation, changed assembly, or both cause the disease. The variant is a missense change, so no truncated protein is assumed.
