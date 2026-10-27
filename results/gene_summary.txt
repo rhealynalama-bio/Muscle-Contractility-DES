@@ -1,0 +1,4 @@
+Gene symbol: DES
+NCBI Gene ID: 1674
+Official name: desmin
+Chromosome: 2
