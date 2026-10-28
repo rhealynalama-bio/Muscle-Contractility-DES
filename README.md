@@ -210,6 +210,7 @@ Sharma et al. (2009) tested recombinant protein and cell expression. They report
 Pica et al. described a man with complete heart block and mild proximal and distal limb weakness, with relatives showing a similar or milder picture. Bergman et al. (2007) described two distantly related Dutch families with autosomal dominant desmin-related myopathy affecting 15 members, ranging from isolated dilated cardiomyopathy to generalized skeletal myopathy with mild respiratory problems. Muscle biopsies showed intracytoplasmic desmin aggregates, and S13F cosegregated with disease. Haplotype analysis summarized in the ClinVar record points to a shared ancestor, so the related families are not independent observations. Several laboratories classify the variant as Pathogenic, and ClinVar's aggregate is Pathogenic with 2-star status. The variant is absent from TOPMed, which fits a rare disease variant but does not prove pathogenicity.
 
 **Predictions.** 
+
 One submitting laboratory reports computational modeling that predicts the substitution disrupts protein function. This is a prediction, not an observation. I ran no structural analysis, and the AlphaFold model has very low confidence near residue 13.
 
 **Uncertainty.** 
