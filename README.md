@@ -1,9 +1,12 @@
 # Muscle-Contractility-DES
 
 **Course:** Cell and Molecular Biology (Ch 09 activity): Molecular Mechanisms of Muscle Contractility
+
 **Student:** Rhealyn F. Alama
+
 **Assignment:** #36, DES, NM_001927.4:c.38C>T (p.Ser13Phe), ClinVar 44260
-**Date accessed (all databases):** 2026-10-27
+
+**Dates accessed:** 2026-10-27 for the databases and papers listed in section (g), except PubMed 17720647 (2026-10-28)
 
 ---
 
@@ -56,6 +59,7 @@ All code is in `analysis.R`. R 4.4.2 on Windows 11; packages rentrez 1.2.4 and g
 ### NCBI Gene and protein
 - Official name: desmin. Gene ID 1674. Chromosome 2.
 - Retrieved protein: **NP_001918.3** (desmin isoform 1), **470 amino acids**.
+- The script takes the NP_ accession from the GenBank record of the assigned transcript NM_001927.4. ClinVar's protein HGVS for this variant names the same accession (NP_001918.3:p.Ser13Phe), so no other isoform was used.
 - The retrieved sequence begins MSQAYSSSQRVSSY..., so residue 13 is serine. This matches the assigned p.Ser13Phe numbering.
 
 ### Amino-acid composition
@@ -119,6 +123,17 @@ Domain coordinates are from UniProt P17661 (accessed 2026-10-27). The variant ma
 
 The variant c.38C>T changes codon 13 of DES from serine to phenylalanine. A small polar residue is replaced by a large nonpolar aromatic one in the N-terminal head domain (positions 2-108), inside a conserved nine-residue motif (SSYRRTFGG) described by Sharma et al. Because this is a missense change, a full-length protein with one substituted residue is expected, not a truncated protein. ClinVar classifies the variant as Pathogenic, and the evidence behind that classification is separated into experimental, clinical, and predicted categories in the discussion below.
 
+**Causal chain (gene to possible effect)**
+
+**DES gene → desmin protein → intermediate filament network linking Z-discs, myofibrils, and the sarcolemma (muscle structure) → p.Ser13Phe in the head domain → abnormal desmin assembly (reported) → possible loss of myofibril alignment and muscle integrity**
+
+1. **Gene:** *DES* on chromosome 2q35 encodes desmin.
+2. **Protein:** a 470-residue muscle intermediate filament protein (NP_001918.3).
+3. **Molecular function:** desmin filaments link Z-discs, neighboring myofibrils, and the sarcolemma. The protein maintains muscle structure. It does not drive the actin-myosin cycle or regulate calcium.
+4. **Assigned variant:** p.Ser13Phe in the head domain (positions 2-108), at a reported protein kinase C phosphorylation site.
+5. **Reported molecular effect:** abnormal assembly in cells, with desmin accumulations or aggregates. Loss of a phosphorylatable serine is a possible contributor, but it is not demonstrated.
+6. **Possible effect on muscle:** disturbed filament networks could weaken myofibril alignment and muscle integrity, which fits the association of S13F with myopathy and cardiac conduction disease. Contraction and relaxation were not directly measured in the papers I read, so I make no claim about them.
+
 ---
 
 ## (f) Limitations and validation experiment
@@ -128,7 +143,7 @@ The variant c.38C>T changes codon 13 of DES from serine to phenylalanine. A smal
 - Only 5 of 10 submissions contribute to the aggregate, and several reports describe related Dutch families that share an ancestor, so they are not fully independent.
 - Amino-acid composition cannot show function or the effect of a variant.
 - A marker on a protein map gives a sequence position, not proof of a changed molecular interaction.
-- The cell experiments in the cited papers used non-muscle cell lines, which may not reproduce muscle behavior. The two papers I read also differ in detail (see the discussion), so the cellular effect is not fully settled.
+- The cell-culture experiments described in the abstracts and in the ClinVar/OMIM text (which names BHK21 and MCF7 cells) are not experiments in muscle fibers, so they may not reproduce muscle behavior. The two papers I read also differ in detail (see the discussion), so the cellular effect is not fully settled.
 - I read the abstracts, not the full text, of the three papers, and I ran no structural or computational analysis of the variant myself.
 
 **Proposed validation experiment**
@@ -147,7 +162,7 @@ Express wild-type desmin, S13F desmin, and a 1:1 mixture in a desmin-null muscle
 | UniProt P17661 (DESM_HUMAN) | https://www.uniprot.org/uniprotkb/P17661/entry | 2026-10-27 |
 | PubMed 19763525 | https://pubmed.ncbi.nlm.nih.gov/19763525/ | 2026-10-27 |
 | PubMed 18061454 | https://pubmed.ncbi.nlm.nih.gov/18061454/ | 2026-10-27 |
-| PubMed 17720647 | https://pubmed.ncbi.nlm.nih.gov/17720647/ | 2026-10-27 |
+| PubMed 17720647 | https://pubmed.ncbi.nlm.nih.gov/17720647/ | 2026-10-28 |
 
 **References**
 1. Sharma S, Mücke N, Katus HA, Herrmann H, Bär H. Disease mutations in the "head" domain of the extra-sarcomeric protein desmin distinctly alter its assembly and network-forming properties. *J Mol Med (Berl)*. 2009;87(12):1207-1219. doi:10.1007/s00109-009-0521-9. PMID 19763525.
