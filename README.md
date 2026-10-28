@@ -201,18 +201,18 @@ See section (f): wild-type, S13F, S13D, and S13A desmin expressed in muscle cell
 
 Desmin is the main intermediate filament protein of skeletal, cardiac, and smooth muscle. It does not drive the actin-myosin cycle. Instead, desmin filaments surround and link Z-discs, join neighboring myofibrils, and connect them to the sarcolemma, which keeps sarcomeres aligned during contraction. The assigned variant, c.38C>T, replaces serine 13 with phenylalanine in NP_001918.3 (470 residues), within the head domain (UniProt positions 2-108).
 
-**Experimental observations.** 
+**Experimental observations** 
 
 Sharma et al. (2009) tested recombinant protein and cell expression. They report that S13F, along with R16C, interfered with in vitro assembly by forming filamentous aggregates, could not build a proper filament system in cells lacking their own intermediate filaments, and, in cells that already express vimentin or desmin, failed to join the existing network and altered its cellular localization. Pica et al. (2008) reported that expressing mutant desmin in cell lines produced large desmin accumulations while a filamentous network was still preserved, and noted that the mutation lies at a protein kinase C phosphorylation site in a conserved head-domain motif. The two reports differ on how well the network is preserved, which I treat as unresolved. Per the ClinVar text, patient heart tissue showed irregular intercalated discs.
 
-**Clinical association.** 
+**Clinical association** 
 
 Pica et al. described a man with complete heart block and mild proximal and distal limb weakness, with relatives showing a similar or milder picture. Bergman et al. (2007) described two distantly related Dutch families with autosomal dominant desmin-related myopathy affecting 15 members, ranging from isolated dilated cardiomyopathy to generalized skeletal myopathy with mild respiratory problems. Muscle biopsies showed intracytoplasmic desmin aggregates, and S13F cosegregated with disease. Haplotype analysis summarized in the ClinVar record points to a shared ancestor, so the related families are not independent observations. Several laboratories classify the variant as Pathogenic, and ClinVar's aggregate is Pathogenic with 2-star status. The variant is absent from TOPMed, which fits a rare disease variant but does not prove pathogenicity.
 
-**Predictions.** 
+**Predictions** 
 
 One submitting laboratory reports computational modeling that predicts the substitution disrupts protein function. This is a prediction, not an observation. I ran no structural analysis, and the AlphaFold model has very low confidence near residue 13.
 
-**Uncertainty.** 
+**Uncertainty** 
 
 The evidence associates S13F with desmin myopathy and cardiac disease and shows abnormal assembly in cells, but it does not show whether lost phosphorylation, changed assembly, or both cause the disease. The variant is a missense change, so no truncated protein is assumed.
