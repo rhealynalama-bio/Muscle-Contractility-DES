@@ -1,11 +1,8 @@
 # Muscle-Contractility-DES
 
 **Course:** Cell and Molecular Biology (Ch 09 activity): Molecular Mechanisms of Muscle Contractility
-
 **Student:** Rhealyn F. Alama
-
 **Assignment:** #36, DES, NM_001927.4:c.38C>T (p.Ser13Phe), ClinVar 44260
-
 **Dates accessed:** 2026-10-27 for the databases and papers listed in section (g), except PubMed 17720647 (2026-10-28)
 
 ---
@@ -125,7 +122,9 @@ The variant c.38C>T changes codon 13 of DES from serine to phenylalanine. A smal
 
 **Causal chain (gene to possible effect)**
 
-**DES gene → desmin protein → intermediate filament network linking Z-discs, myofibrils, and the sarcolemma (muscle structure) → p.Ser13Phe in the head domain → abnormal desmin assembly (reported) → possible loss of myofibril alignment and muscle integrity**
+**DES gene → desmin protein → intermediate filament network linking Z-discs, myofibrils, and the sarcolemma (muscle structure) → p.Ser13Phe in the head domain → abnormal desmin assembly (reported) → possible loss of myofibril alignment and muscle integrity.**
+
+Step by step:
 
 1. **Gene:** *DES* on chromosome 2q35 encodes desmin.
 2. **Protein:** a 470-residue muscle intermediate filament protein (NP_001918.3).
